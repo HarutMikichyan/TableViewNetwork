@@ -17,14 +17,16 @@ final class DataManager {
     }
     
     func getImageData(completion: @escaping ([ImageData]?) -> Void) {
-        if let url = Bundle.main.url(forResource: "mask", withExtension: "json"), let data = try? Data(contentsOf: url) {
-            networkManager.getImageData(data: data) { (imageData) in
-                if !imageData.isEmpty {
-                    DispatchQueue.main.async {
-                        completion(imageData)
+        DispatchQueue.global().async { [weak self] in
+            if let self = self, let url = Bundle.main.url(forResource: "mask", withExtension: "json"), let data = try? Data(contentsOf: url) {
+                self.networkManager.getImageData(data: data) { (imageData) in
+                    if !imageData.isEmpty {
+                        DispatchQueue.main.async {
+                            completion(imageData)
+                        }
+                    } else {
+                        completion(nil)
                     }
-                } else {
-                    completion(nil)
                 }
             }
         }
