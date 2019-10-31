@@ -19,6 +19,7 @@ class ImagesListViewController: UIViewController {
         setupTableView()
         setupDataManager()
         tableView.register(UINib(nibName: ImagesListTableViewCell.id, bundle: nil), forCellReuseIdentifier: ImagesListTableViewCell.id)
+        tableView.separatorStyle = .none
         
         dataManager.getImageData { [weak self] (result) in
             guard let self = self, let result = result else { return }
@@ -61,10 +62,11 @@ extension ImagesListViewController: UITableViewDelegate, UITableViewDataSource {
         cell.imageID.text = imagesData[indexPath.row].imageID
         cell.activityIndicator.isHidden = false
         cell.activityIndicator.startAnimating()
+        cell.tag = indexPath.row
         
         DataStore.shared.saveImage(stringURL: imagesData[indexPath.row].stringURL) { [weak cell] (image, bool) in
             if bool {
-                if let cell = cell, image != nil {
+                if let cell = cell, image != nil, cell.tag == indexPath.row {
                     cell.activityIndicator.stopAnimating()
                     cell.activityIndicator.isHidden = true
                     cell.iconImage.image = image
