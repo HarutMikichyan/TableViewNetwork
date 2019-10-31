@@ -65,12 +65,10 @@ extension ImagesListViewController: UITableViewDelegate, UITableViewDataSource {
         cell.tag = indexPath.row
         
         DataStore.shared.saveImage(stringURL: imagesData[indexPath.row].stringURL) { [weak cell] (image, bool) in
-            if bool {
-                if let cell = cell, image != nil, cell.tag == indexPath.row {
-                    cell.activityIndicator.stopAnimating()
-                    cell.activityIndicator.isHidden = true
-                    cell.iconImage.image = image
-                }
+            if bool, let cell = cell, image != nil, cell.tag == indexPath.row {
+                cell.activityIndicator.stopAnimating()
+                cell.activityIndicator.isHidden = true
+                cell.iconImage.image = image
             }
         }
         return cell
